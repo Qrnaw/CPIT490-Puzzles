@@ -122,4 +122,22 @@ img{
     color: rgb(24, 57, 129);
     background: none;
 }
-/* End Abdullah Style */
+
+/* footer section styling */
+footer{
+    background: #142F43;
+    padding: 15px 23px;
+    color: #fff;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+
+}
+footer span a{
+    color: #1597E5;
+    text-decoration: none;
+}
+footer span a:hover{
+    text-decoration: underline;
+}
