@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>the statment </title>
+
+</head>
+
+<body style="background-color: #ddd;">
+    <h1 class="header_maze">the statment</h1>
+
+    <h3 class="header_sub">about: </h3>
+    <div class="about">
+        <p class="sector left">
+            The Puzzle about two sensors and one button so the player can solve it with a statement it will appear in
+            the firebase. The player must solve it in order first start with the Ultrasonic then POT (Variable resistor)
+            last press the button. There is 3 led Red Yellow Green at first the red one will start then if the player
+            near the solution the yellow led will light and if he/she solve it the green led will light.
+            <br><br>
+            The Statement is (Behind the wall there's a lever you can use it with your right finger).
+            <br><br>
+            First: the wall that mean the player start with Ultrasonic why because its only Ultrasonic can interact with
+            the wall it can read the distance that why. The solve is between 180 and 220 cm you can solve the first one.
+            <br><br>
+            Second: the lever it means the POT. Player can solve it in range of 292 and 308.
+            <br><br>
+            Third: the button just press it 2 second or so then the player will solve the puzzle.
+            <br><br>
+            Enjoy.
+
+        </p>
+    </div>
+
+    <h3 class="header_sub">photo:</h3>
+    <p class="sector">
+        <img src="Picture1muh.jpg" alt="">
+        <img src="Picture2muh.jpg" alt="">
+    </p>
+
+    <h3 class="header_sub">The code used for this game:</h3>
+    <p class="sector">
+    <pre class="sector" style="text-align: left">
+    //FirebaseESP8266.h must be included before ESP8266WiFi.h
+    #include "FirebaseESP8266.h"
+    #include <ESP8266WiFi.h>
+
+    #define FIREBASE_HOST "esp8266-cf685-default-rtdb.firebaseio.com"
+    #define FIREBASE_AUTH "MhuIWbw8jYX5a4g3s8v8bN1GOIuj3npcTXUszA64"
+    #define WIFI_SSID "HUAWEI Y9 2019"
+    #define WIFI_PASSWORD "m0544288871"
+
+    //Define FirebaseESP8266 data object
+    FirebaseData firebaseData;
+
+    int echoPin = D1;
+    int trigPin = D2;
+    int button = D0;
+    int GreenLed = D6;
+    int YellwoLed = D7;
+    int RedLed = D8;
+    int potPin = A0;
+
+    int Hint1, Hint2;
+    bool Pushbutton;
+
+    int TargetPot = 300;
+
+    long duration, cm;
+    long TempCm = 0, TempPot = 0;
+
+    int TargetUltrasoinc = 200;
+    int MinimumTargetUltrasoinc = 180;
+    int MaximumTargetUltrasoinc = 220;
+
+    void setup() {
+    Serial.begin(115200);
+
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    Serial.print("Connecting to Wi-Fi");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.print(".");
+        delay(300);
+    }
+    Serial.println();
+    Serial.print("Connected with IP: ");
+    Serial.println(WiFi.localIP());
+    Serial.println();
+
+    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+    Firebase.reconnectWiFi(true);
+
+    Firebase.setString(firebaseData, "Message", "Behind the wall there's a lever you can use it with your right finger");
+    Firebase.setInt(firebaseData, "Hint-1", 0);
+    Firebase.setInt(firebaseData, "Hint-2", 0);
+
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    pinMode(button, INPUT);
+    pinMode(GreenLed, OUTPUT);
+    pinMode(YellwoLed, OUTPUT);
+    pinMode(RedLed, OUTPUT);
+    }
+
+    void loop() {
+
+    if (Firebase.getInt(firebaseData, "Hint-1")) {
+        int temp_Hint1 = firebaseData.intData();
+        if (temp_Hint1 == 1) {
+        Firebase.setString(firebaseData, "From-Hint-1", "Its Based on Order ");
+        }
+    }
+    if (Firebase.getInt(firebaseData, "Hint-2")) {
+        int temp_Hint2 = firebaseData.intData();
+        if (temp_Hint2 == 1) {
+        Firebase.setString(firebaseData, "From-Hint-2", "Start from Ultrasonic ");
+        }
+    }
+
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(5);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    // Read the signal from the sensor pinMode(echoPin, INPUT);
+    duration = pulseIn(echoPin, HIGH);
+    // Convert the time into a distance
+    cm = (duration / 2) / 29.1; // Divide by 29.1 or multiply by 0.0343
+    int PotVal = analogRead(potPin);
+    // -------------------------------
+
+    digitalWrite(RedLed, HIGH);
+    digitalWrite(YellwoLed, LOW);
+    digitalWrite(GreenLed, LOW);
+
+    if (TempCm != TargetUltrasoinc) {
+        if (cm < MaximumTargetUltrasoinc && cm > MinimumTargetUltrasoinc ) {
+
+        digitalWrite(YellwoLed, HIGH);
+        digitalWrite(RedLed, LOW);
+
+        }
+    }
+    if (TempCm != TargetUltrasoinc) {
+        if (cm < TargetUltrasoinc && cm > (TargetUltrasoinc - 10) ) { // Save The Value of cm
+
+        TempCm = TargetUltrasoinc;
+        digitalWrite(GreenLed, HIGH);
+        digitalWrite(YellwoLed, LOW);
+        digitalWrite(RedLed, LOW);
+        Firebase.setString(firebaseData, "FromUltraSonic", "You did it you have Tow more to solve!!");
+        delay(2000);
+        }
+    }
+
+    if (TempCm == TargetUltrasoinc) {
+        // Ultrasonic Start Here
+
+        if (TempPot != TargetPot) {
+        if (PotVal > 270 && PotVal < 345) {
+            // POT Start Here
+            digitalWrite(YellwoLed, HIGH);
+            digitalWrite(RedLed, LOW);
+        }
+        }
+
+        if (TempPot != TargetPot) {
+        if (PotVal < TargetPot + 8 && PotVal > TargetPot - 8) {
+            TempPot = TargetPot;
+            digitalWrite(GreenLed, HIGH);
+            digitalWrite(YellwoLed, LOW);
+            digitalWrite(RedLed, LOW);
+            Firebase.setString(firebaseData, "FromPot", "You did it you have one more to solve!!");
+            delay(2000);
+        }
+        }
+
+        if (TempPot == TargetPot) {
+        // Pot Start Here
+
+        Pushbutton = digitalRead(button);
+        if (Pushbutton) {
+            //Button Start Her
+            Firebase.setString(firebaseData, "FromBuutom", "You Solve The Puzzle!!!!!");
+            digitalWrite(GreenLed, HIGH);
+            digitalWrite(RedLed, LOW);
+            delay(2000);
+        }
+        }
+        //Ultrasonic End Here
+    }
+
+    Serial.println(PotVal);
+
+    Serial.print("in, ");
+    Serial.print(cm);
+    Serial.print("cm");
+    Serial.println();
+    delay(1000);
+    }
+        </pre>
+    </p>
+
+    <button class="back"><a href="index.html">Home</a></button>
+
+</body>
+
+</html>

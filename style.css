@@ -1,0 +1,125 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.indexBack{
+    background-image: url(arduino.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+h2{
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    color: #ddd;
+    font-size: 50px;
+}
+p,pre{
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    color: #ddd;
+    font-size: 25px;
+}
+
+.container {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container td, .container th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    background-color: #ddd;
+}  
+.container tr:nth-child(even){
+    background-color: #db2b2b;
+}  
+.container tr:hover {background-color: #ddd;}
+
+.container th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(24, 57, 129);
+    color: white;
+    text-align: center;
+}
+.final{
+    border: 1px solid #ddd;
+    background-color: #04AA6D;
+    border-radius: 50px;
+}
+.bb{
+    border-bottom: 2px solid white;
+    border-top: 2px solid white;
+    text-align: center;
+    margin: 20px 50px;
+}
+
+/* Abdullah Puzzle - the maze Style */
+
+
+.header_maze{
+    font-size: 40px;
+    color: rgb(24, 57, 129);
+    text-align: center;
+    margin: 20px;
+}
+.header_sub{
+    font-size: 30px;
+    font-weight: bold;
+    color: rgb(24, 57, 129);
+    /* text-align: center; */
+    margin: 20px;
+    margin-top: 30px;
+}
+.sector{
+    margin: 10px;
+    color: black;
+    font-size: 20px;
+    
+}
+.left{
+    text-align: left;
+}
+img{
+    width: 50%;
+}
+.about{
+    border-bottom: 2px solid black;
+    border-top: 2px solid black;
+    text-align: center;
+    margin: auto 50px;
+}
+.about p{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.back a{
+    display: inline-block;
+    background: rgb(24, 57, 129);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 30px;
+    margin-top: 20px;
+    border-radius: 6px;
+    border: 2px solid rgb(24, 57, 129);
+    transition: all 0.3s ease;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+}
+.back a:hover{
+    color: rgb(24, 57, 129);
+    background: none;
+}
+/* End Abdullah Style */
